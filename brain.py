@@ -1,4 +1,5 @@
-from network import N_HIDDEN, N_INPUTS, N_OUTPUTS, random_biases, random_weights
+from constants import N_HIDDEN, N_INPUTS, N_OUTPUTS
+from network import random_biases, random_weights
 
 
 class Brain:

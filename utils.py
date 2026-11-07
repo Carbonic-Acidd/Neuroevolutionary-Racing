@@ -3,18 +3,12 @@ import math
 import numpy as np
 import pygame
 
-from network import forward_pass, N_HIDDEN, N_OUTPUTS, N_INPUTS, random_weights, random_biases
-
-SCREEN_SIZE = (1200, 800)
-
-GRASS = (34, 177, 76)          # this is MS Paint's default green
-GRASS_TOLERANCE = 25           # how far off a color can be and still count
-START_COLOR = (255, 255, 255)
-START_TOLERANCE = 20
+from constants import (GRASS, GRASS_TOLERANCE, IMAGES_DIR, SCREEN_SIZE,
+                       START_COLOR, START_TOLERANCE)
 
 def load_track(path):
     """Load a track image and stretch it to the screen size."""
-    track = pygame.image.load("Images/" + path).convert()
+    track = pygame.image.load(IMAGES_DIR + path).convert()
     # transform.scale (not smoothscale) keeps colors pure instead of blending edges
     return pygame.transform.scale(track, SCREEN_SIZE)
 

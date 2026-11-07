@@ -11,13 +11,8 @@ numpy computes a whole layer at once: (weights @ inputs) is every neuron's
 weighted sum in one go. It's exactly the same maths as looping over neurons
 (run this file directly to see both give the same answer).
 """
-import math
 
 import numpy as np
-
-N_INPUTS = 5    # one per sensor
-N_HIDDEN = 3
-N_OUTPUTS = 2   # steering, throttle
 
 def random_weights(input_neurons, output_neurons):
     return np.random.uniform(-1,1,size=(output_neurons, input_neurons))
