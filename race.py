@@ -1,19 +1,24 @@
 
 from argparse import ArgumentParser
 
+import numpy as np
 import pygame
 
+from brain import Brain
 from constants import (FONT_SIZE, FPS, GENERATION_MAX_FRAMES, POPULATION_SIZE,
                        SCREEN_SIZE, TEXT_COLOR)
 from evolution import next_generation
-from utils import find_start_position, load_track
+from utils import find_start_position, load_brain, load_track, save_brain
 
 from car import Car
+
+best_car = None
 
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("--track", default="track1.png")
     parser.add_argument("--mode", choices=("manual", "NN"), default="NN")
+    parser.add_argument("--fresh", action = "store_true")
     return parser.parse_args()
 
 
@@ -31,12 +36,14 @@ def drive_with_keyboard(car, track):
 
 def draw_frame(screen, font, track, cars, show_sensors, mode,generation, frame):
     """Redraw the whole scene from scratch. Called once per frame; only draws, never changes state."""
+    global best_car
     screen.blit(track, (0, 0))
 
     alive_cars = [car for car in cars if car.alive]
     # The best car is picked from the living ones. If everyone is dead, use all cars
     # so the status text still has a car to read from.
     best = max(alive_cars or cars, key=lambda car: car.fitness())
+    best_car = best
     for car in cars:
         if car is not best:
             car.draw(screen)
@@ -57,7 +64,6 @@ def draw_frame(screen, font, track, cars, show_sensors, mode,generation, frame):
 
     pygame.display.flip()
 
-
 def main():
     args = parse_args()
 
@@ -68,11 +74,13 @@ def main():
     clock = pygame.time.Clock()
 
     track = load_track(args.track)
-    start_pos = find_start_position(track)
+    start_pos, start_heading = find_start_position(track)
     if args.mode == "NN":
-        cars = [Car(start_pos) for _ in range (POPULATION_SIZE)]
+        cars = [Car(start_pos,heading = start_heading) for _ in range (POPULATION_SIZE)]
+        if not args.fresh:
+            cars[0] = Car(start_pos, heading = start_heading, brain= load_brain())
     else:
-        cars = [Car(start_pos)]
+        cars = [Car(start_pos, heading = start_heading)]
     show_sensors = True
     generation_number = 1
     frame = 0
@@ -83,15 +91,16 @@ def main():
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                save_brain(best_car)
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     for car in cars:
-                        car.reset(start_pos)
+                        car.reset(start_pos, start_heading)
                     frame = 0
                 elif event.key == pygame.K_n:
                     generation_number += 1
-                    cars = [Car(start_pos) for _ in range (len(cars))]
+                    cars = next_generation(cars, start_pos, start_heading)
                     frame = 0
                 elif event.key == pygame.K_k:
                     show_sensors = not show_sensors
@@ -103,7 +112,7 @@ def main():
             generation_over = all(not car.alive for car in cars) or frame >= GENERATION_MAX_FRAMES
 
             if generation_over:
-                cars = next_generation(cars, start_pos, POPULATION_SIZE)
+                cars = next_generation(cars, start_pos, start_heading)
                 generation_number += 1
                 frame = 0
         elif cars[0].alive:

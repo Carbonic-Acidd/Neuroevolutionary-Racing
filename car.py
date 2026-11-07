@@ -5,7 +5,7 @@ import numpy as np
 import pygame
 
 from brain import Brain
-from constants import (CAR_ACCELERATION, CAR_MAX_VEL, CAR_ROTATION_VEL, CAR_START_HEADING,
+from constants import (CAR_ACCELERATION, CAR_MAX_VEL, CAR_ROTATION_VEL, CAR_BASE_START_HEADING,
                        CORNER_COLOR_ALIVE, CORNER_COLOR_DEAD, IMAGES_DIR, N_INPUTS, N_OUTPUTS,
                        SENSOR_ANGLES, SENSOR_COLOR, SENSOR_MAX_RANGE, SENSOR_STEP,
                        STILL_LIMIT_FRAMES)
@@ -23,7 +23,7 @@ class Car:
     IMAGES = None   # {"normal": Surface, "best": Surface, "dead": Surface}, loaded once
 
     def __init__(self, location, brain=None, max_vel=CAR_MAX_VEL, rotation_vel=CAR_ROTATION_VEL,
-                 heading=CAR_START_HEADING):
+                 heading=CAR_BASE_START_HEADING):
         if Car.IMAGES is None:
             # Load from disk exactly once for the whole program, shared by every car.
             # The PNGs face down; rotate them once so they face right, matching heading 0.
@@ -51,7 +51,7 @@ class Car:
 
         self.reset(location, heading)
 
-    def reset(self, location, heading=CAR_START_HEADING):
+    def reset(self, location, heading):
         self.x, self.y = location
         self.heading = heading
         self.vel = 0

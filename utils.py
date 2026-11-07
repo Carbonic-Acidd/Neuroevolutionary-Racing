@@ -3,6 +3,7 @@ import math
 import numpy as np
 import pygame
 
+from brain import Brain
 from constants import (GRASS, GRASS_TOLERANCE, IMAGES_DIR, SCREEN_SIZE,
                        START_COLOR, START_TOLERANCE)
 
@@ -42,10 +43,17 @@ def find_start_position(track):
     pixels = pygame.surfarray.array3d(track).astype(int)   # shape: (width, height, 3)
     close_enough = np.abs(pixels - START_COLOR) <= START_TOLERANCE
     is_white = close_enough.all(axis=2)                   # True where R, G and B all match
-    xs, ys = np.nonzero(is_white)
-    if len(xs) == 0:
+    xA, yA = np.nonzero(is_white)
+    if len(xA) == 0:
         raise ValueError("No start line found. Paint a white line across the road.")
-    return int(xs.mean()), int(ys.mean())
+
+    pL = (xA.min(), yA.min())
+    pR = (xA.max(), yA.max())
+
+    angle_radians = math.atan2(pR[0] - pL[0],-(pR[1]-pL[1]))
+    
+
+    return (int(xA.mean()), int(yA.mean())), math.degrees(angle_radians)
 
 
 # ----------------------------------------------------------------------
@@ -92,3 +100,22 @@ def cast_ray(track, carX, carY, angle_Deg, max_range, step):
             return distance, (px, py)
         distance += step
     return max_range, (carX + dx * max_range, carY + dy * max_range)
+
+def load_brain():
+    data = np.load("saved_brain.npz")
+    brain = Brain()
+    brain.hidden_weights = data["hidden_weights"]
+    brain.hidden_biases = data["hidden_biases"]
+    brain.output_weights = data["output_weights"]
+    brain.output_biases = data["output_biases"]
+    return brain
+
+def save_brain(best_car):
+    if best_car is None:
+        return
+    brain = best_car.brain
+    np.savez("saved_brain.npz", 
+             hidden_weights = brain.hidden_weights,
+             hidden_biases = brain.hidden_biases,
+             output_weights = brain.output_weights,
+             output_biases = brain.output_biases)

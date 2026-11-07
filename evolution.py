@@ -23,22 +23,22 @@ def mutate(brain, rate = MUTATION_RATE, strength = MUTATION_STRENGTH):
         setattr(brain, attribute_name, values + should_mutate * noise)
     return brain
 
-def next_generation(cars, start_pos):
+def next_generation(cars, start_pos, start_heading):
 
     ranked = sorted(cars, key = lambda car: car.fitness(), reverse = True)
     survivors = ranked[:N_SURVIVORS]
 
     new_gen = []
     #Elitism : Keep top Car
-    new_gen.append(Car(start_pos, brain= deepcopy(survivors[0].brain)))
+    new_gen.append(Car(start_pos,heading = start_heading, brain= deepcopy(survivors[0].brain)))
 
     #Immigrant: Completely Random Brain
-    new_gen.append(Car(start_pos))
+    new_gen.append(Car(start_pos, heading = start_heading))
 
     #Crossover and Mutate the rest of the necessary cars
     while len(new_gen) < len(cars):
         parent_a, parent_b = random.sample(survivors, 2)
         child_brain = mutate(crossover(parent_a.brain, parent_b.brain))
-        new_gen.append(Car(start_pos, brain = child_brain))
+        new_gen.append(Car(start_pos,heading = start_heading, brain = child_brain))
 
     return new_gen

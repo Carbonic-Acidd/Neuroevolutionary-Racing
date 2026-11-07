@@ -32,7 +32,7 @@ SENSOR_COLOR = (0, 200, 255)
 CAR_MAX_VEL = 5
 CAR_ROTATION_VEL = 4
 CAR_ACCELERATION = 0.1
-CAR_START_HEADING = 180        # 0 = right, 90 = down, 180 = left, 270 = up
+CAR_BASE_START_HEADING = 180        # 0 = right, 90 = down, 180 = left, 270 = up
 STILL_LIMIT_FRAMES = 90        # frames a car may sit still before it's killed
 
 # ----------------------------------------------------------------------
@@ -53,7 +53,7 @@ N_OUTPUTS = 2                   # steering, throttle
 # Evolution
 # ----------------------------------------------------------------------
 POPULATION_SIZE = 40
-GENERATION_MAX_TIME = 20                          # seconds
+GENERATION_MAX_TIME = 1000                         # seconds
 GENERATION_MAX_FRAMES = FPS * GENERATION_MAX_TIME
 N_SURVIVORS = 8
 MUTATION_RATE = 0.15
