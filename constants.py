@@ -53,8 +53,15 @@ N_OUTPUTS = 2                   # steering, throttle
 # Evolution
 # ----------------------------------------------------------------------
 POPULATION_SIZE = 40
-GENERATION_MAX_TIME = 1000                         # seconds
+GENERATION_MAX_TIME = 20                           # seconds per track
 GENERATION_MAX_FRAMES = FPS * GENERATION_MAX_TIME
+PROGRESS_CHECK_TIME = 5                            # seconds before the "are you going anywhere?" check
+PROGRESS_CHECK_FRAMES = FPS * PROGRESS_CHECK_TIME
+MIN_PROGRESS_DISTANCE = 80                         # px from spawn; anything closer gets killed
+SHOWCASE_COUNT = 5                                 # cars shown when you press S
+TRAINING_TRACKS = ["track1.png", "track2.png", "track3.png"]
+SINGLE_TRACK_BRAIN_FILE = "single_track_brain.npz" # best brain from --mode NN (one track)
+ALL_TRACKS_BRAIN_FILE = "all_tracks_brain.npz"     # best brain from --mode autotest (every track)
 N_SURVIVORS = 8
 MUTATION_RATE = 0.15
 MUTATION_STRENGTH = 0.4

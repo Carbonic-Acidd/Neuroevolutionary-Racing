@@ -48,11 +48,15 @@ class Car:
 
         self.distance_travelled = 0
         self.frames_still = 0
+        # Score banked from earlier tracks (autotest mode). Lives here, not in reset(),
+        # so it carries over when the car moves to the next track.
+        self.total_fitness = 0
 
         self.reset(location, heading)
 
     def reset(self, location, heading):
         self.x, self.y = location
+        self.start_x, self.start_y = location
         self.heading = heading
         self.vel = 0
         self.alive = True
@@ -163,5 +167,9 @@ class Car:
                 pygame.draw.line(screen, SENSOR_COLOR, (self.x, self.y), (end_x, end_y), 1)
                 pygame.draw.circle(screen, SENSOR_COLOR, (int(end_x), int(end_y)), 3)
 
+    def distance_from_start(self):
+        """Straight-line distance from where this car spawned. Spinning cars keep this small."""
+        return math.hypot(self.x - self.start_x, self.y - self.start_y)
+
     def fitness(self):
-        return self.distance_travelled
+        return self.total_fitness + self.distance_travelled

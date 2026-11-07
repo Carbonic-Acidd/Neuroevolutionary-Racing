@@ -1,11 +1,12 @@
 import math
+import os
 
 import numpy as np
 import pygame
 
 from brain import Brain
 from constants import (GRASS, GRASS_TOLERANCE, IMAGES_DIR, SCREEN_SIZE,
-                       START_COLOR, START_TOLERANCE)
+                       SINGLE_TRACK_BRAIN_FILE, START_COLOR, START_TOLERANCE)
 
 def load_track(path):
     """Load a track image and stretch it to the screen size."""
@@ -101,8 +102,11 @@ def cast_ray(track, carX, carY, angle_Deg, max_range, step):
         distance += step
     return max_range, (carX + dx * max_range, carY + dy * max_range)
 
-def load_brain():
-    data = np.load("saved_brain.npz")
+def load_brain(path=SINGLE_TRACK_BRAIN_FILE):
+    """Returns None if there's no saved brain yet."""
+    if not os.path.exists(path):
+        return None
+    data = np.load(path)
     brain = Brain()
     brain.hidden_weights = data["hidden_weights"]
     brain.hidden_biases = data["hidden_biases"]
@@ -110,11 +114,11 @@ def load_brain():
     brain.output_biases = data["output_biases"]
     return brain
 
-def save_brain(best_car):
+def save_brain(best_car, path=SINGLE_TRACK_BRAIN_FILE):
     if best_car is None:
         return
     brain = best_car.brain
-    np.savez("saved_brain.npz", 
+    np.savez(path,
              hidden_weights = brain.hidden_weights,
              hidden_biases = brain.hidden_biases,
              output_weights = brain.output_weights,
