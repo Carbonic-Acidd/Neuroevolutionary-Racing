@@ -29,9 +29,9 @@ SENSOR_COLOR = (0, 200, 255)
 # ----------------------------------------------------------------------
 # Car physics
 # ----------------------------------------------------------------------
-CAR_MAX_VEL = 5
-CAR_ROTATION_VEL = 4
-CAR_ACCELERATION = 0.1
+CAR_MAX_VEL = 3
+CAR_ROTATION_VEL = 5
+CAR_ACCELERATION = 0.15
 CAR_BASE_START_HEADING = 180        # 0 = right, 90 = down, 180 = left, 270 = up
 STILL_LIMIT_FRAMES = 90        # frames a car may sit still before it's killed
 
@@ -52,7 +52,7 @@ N_OUTPUTS = 2                   # steering, throttle
 # ----------------------------------------------------------------------
 # Evolution
 # ----------------------------------------------------------------------
-POPULATION_SIZE = 40
+POPULATION_SIZE = 60
 GENERATION_MAX_TIME = 20                           # seconds per track
 GENERATION_MAX_FRAMES = FPS * GENERATION_MAX_TIME
 PROGRESS_CHECK_TIME = 5                            # seconds before the "are you going anywhere?" check
@@ -63,6 +63,6 @@ TRAINING_TRACKS = ["track1.png", "track2.png", "track3.png"]
 SINGLE_TRACK_BRAIN_FILE = "single_track_brain.npz" # best brain from --mode NN (one track)
 ALL_TRACKS_BRAIN_FILE = "all_tracks_brain.npz"     # best brain from --mode autotest (every track)
 N_SURVIVORS = 8
-MUTATION_RATE = 0.15
-MUTATION_STRENGTH = 0.4
+MUTATION_RATE = 0.20
+MUTATION_STRENGTH = 0.5
 ATTRIBUTE_NAMES = ["hidden_weights", "hidden_biases", "output_weights", "output_biases"]
